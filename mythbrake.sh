@@ -2,10 +2,10 @@
 # Save this as mythbrake.sh and make the file executable
 # Written by Ares Drake, ares.drake@gmail.com
 # Licenced under GPL v3
-# This Script shall be called as MythTV user job. It transcodes the DVB recordings (mpeg files) using Handbrake. It first checks whether the recording is HDTV. If so it will be reencoded with H.264 to save space. SDTV will have commercials cut out if necessary and will then be transcoded to H.263 (Xvid, DivX).
+# This Script shall be called as MythTV user job. It transcodes the DVB recordings (mpeg files) using Handbrake. It first checks whether the recording is HDTV. If so it will be reencoded with HEVC to save space. SDTV will have commercials cut out if necessary and will then be transcoded to HEVC.
 #
 #USAGE:######################
-# This Sript shall be called as a MythTV user job like as follows:
+# This Script shall be called as a MythTV user job like as follows:
 # /path/to/mythbrake.sh "%DIR%" "%FILE%" "%CHANID%" "%STARTTIMEUTC%" "%TITLE%" "%SUBTITLE%" "%CATEGORY%"
 #############################
 #
@@ -14,23 +14,23 @@
 # You need to have the following programs installed:
 # mediainfo: http://mediainfo.sourceforge.net/
 # handbrake with dependencies: http://www.handbrake.fr
-# Installation of these is convered on their sites
+# Installation of these is covered on their sites
 #############################
 
 
 ######SOME CONSTANSTS FOR USER EDITING######
 ############################################
-logdir="/opt/mythtv/transcodelogs" #change to your needs for logs
+logdir="/var/log/mythtv/transcodelogs" #change to your needs for logs
 errormail="youremail@adress.com" # this email address will be informed in case of errors
-outdir="/where/you/want/it" # specify directory where you want the transcoded file to be placed
+outdir="/home/mythtv/Transcode" # specify directory where you want the transcoded file to be placed
 #Audio track (language) selection, your values must match the output syntax of mediainfo
 #check "mediainfo --Inform="Audio;%Language/String% yoursourcefile.mpg" in the terminal for syntax
-lang_1="German" #Primary language you want to keep
-lang_2="qaa" #Secondary language you want to keep, use "none" to skip, quaa is original language, wich is English most of the time
+lang_1="English" #Primary language you want to keep
+lang_2="German" #Secondary language you want to keep, use "none" to skip, quaa is original language, wich is English most of the time
 lang_3="French" #Thid language you want to keep, use "none" to skip
-lang1_name="Deutsch" #This is the label of the 1st audio stream inside the final video file
-lang2_name="Englisch" #This is the label of the 2nd audio stream inside the final video file
-lang3_name="Französisch" #This is the label of the 3rd audio stream inside the final video file
+lang1_name="English" #This is the label of the 1st audio stream inside the final video file
+lang2_name="German" #This is the label of the 2nd audio stream inside the final video file
+lang3_name="French" #This is the label of the 3rd audio stream inside the final video file
 ######END constants for user editing######
 
 
@@ -47,7 +47,7 @@ chanid="$3"
 starttime="$4"
 if [ -z "$category" ]
 then
-category="Unbekannt" #name for unknown category, Unbekannt is German for unknown
+category="Unknown" #name for unknown category, Unbekannt is German for unknown
 fi
 logfile="$logdir/$scriptstarttime-$title.log"
 touch "$logfile"
@@ -353,7 +353,7 @@ echo "Finished Audio Selection" >> "$logfile"
 
 echo "$audiotacks, $audioname, $audiocodec, $audiobitrate, $audiodownmix"
 echo "$audiotacks, $audioname, $audiocodec, $audiobitrate, $audiodownmix" >> "$logfile"
-#HandBrakeCLI -q 19.0 -e x264 -r 25 -a $audiotacks -A $audioname -E $audiocodec -B $audiobitrate -6 $audiodownmix -f mp4 --crop 0:0:0:0 -d -m -x b-adapt=2:rc-lookahead=50:ref=3:bframes=3:me=umh:subme=8:trellis=1:merange=20:direct=auto -i "$mythrecordingsdir/$file" -o "$outfile" -4 --optimize 2>> "$logfile"
+#HandBrakeCLI -q 19.0 -e x265 -r 25 -a $audiotacks -A $audioname -E $audiocodec -B $audiobitrate -6 $audiodownmix -f mp4 --crop 0:0:0:0 -d -m -x b-adapt=2:rc-lookahead=50:ref=3:bframes=3:me=umh:subme=8:trellis=1:merange=20:direct=auto -i "$mythrecordingsdir/$file" -o "$outfile" -4 --optimize 2>> "$logfile"
 
 ####################
 #get width: you need mediainfo installed, see mediainfo.sourceforge.net
@@ -368,11 +368,11 @@ width=$(mediainfo --Inform="Video;%Width%" "$mythrecordingsdir/$file")
 
 # width >=1280
 # currently this can only be ARD HD, ZDF HD or ARTE HD, so no commercials
-# Userjob for HDTV: Re-Encode in AVC H.264: saves space, but keeps H.264, x264 via HandbrakeCLI
+# Userjob for HDTV: Re-Encode in AVC HEVC: saves space, but keeps HEVC, x265 via HandbrakeCLI
 if [ $width -ge 1280 ]
   then
   echo "Userjob HD-TV starts because of with of $width" >> "$logfile"
-HandBrakeCLI -q 19.0 -e x264 -r 25 -a "$audiotacks" -A "$audioname" -E "$audiocodec" -B "$audiobitrate" -6 "$audiodownmix" -f mp4 --crop 0:0:0:0 -d -m -x b-adapt=2:rc-lookahead=50:ref=3:bframes=3:me=umh:subme=8:trellis=1:merange=20:direct=auto -i "$mythrecordingsdir/$file" -o "$outfile" -4 --optimize 2>> "$logfile"
+HandBrakeCLI --multi-pass -q 24 -e x265 -r 25 -a "$audiotacks" -A "$audioname" -E "$audiocodec" -B "$audiobitrate" -6 "$audiodownmix" -f mp4 --crop 0:0:0:0 -d -m -x b-adapt=2:rc-lookahead=50:ref=3:bframes=3:me=umh:subme=8:trellis=1:merange=20:direct=auto -i "$mythrecordingsdir/$file" -o "$outfile" -4 --optimize 2>> "$logfile"
   if [ $? != 0 ]
 	# There were errors in the Handbrake Run.
 	then
@@ -437,9 +437,9 @@ elif [ $width -le 720 ]
     # then I got advised against manual access to the database when using a language
     # such as bash with no mysql support.
       then
-      #This is a channel without commercials, encoding to X264
-      echo "Userjob SD-TV ohne Werbung startet" >> "$logfile"
-HandBrakeCLI -q 19.0 -e x264 -r 25 -a "$audiotacks" -A "$audioname" -E "$audiocodec" -B "$audiobitrate" -6 "$audiodownmix" -f mp4 --crop 0:0:0:0 -d -m -x b-adapt=2:rc-lookahead=50:ref=3:bframes=3:me=umh:subme=8:trellis=1:merange=20:direct=auto -i "$mythrecordingsdir/$file" -o "$outfile" -4 --optimize 2>> "$logfile"
+      #This is a channel without commercials, encoding to X265
+      echo "Userjob SD-TV without Commercials: STARTS" >> "$logfile"
+HandBrakeCLI --multi-pass -q 24 -e x265 -r 25 -a "$audiotacks" -A "$audioname" -E "$audiocodec" -B "$audiobitrate" -6 "$audiodownmix" -f mp4 --crop 0:0:0:0 -d -m -x b-adapt=2:rc-lookahead=50:ref=3:bframes=3:me=umh:subme=8:trellis=1:merange=20:direct=auto -i "$mythrecordingsdir/$file" -o "$outfile" -4 --optimize 2>> "$logfile"
       if [ $? != 0 ]
 	# There were errors in the Handbrake Run.
 	then
@@ -457,7 +457,7 @@ HandBrakeCLI -q 19.0 -e x264 -r 25 -a "$audiotacks" -A "$audioname" -E "$audioco
 
     else
       # We have a channel with commercials, so flag & cut them out first.
-      echo "Userjob SD-TV mit Werbung startet" >> "$logfile"
+      echo "Userjob SD-TV with commercials: START" >> "$logfile"
       /usr/bin/mythcommflag -c "$chanid" -s "$starttime" --gencutlist
       /usr/bin/mythtranscode --chanid "$chanid" --starttime "$starttime" --mpeg2 --honorcutlist
       /usr/bin/mythcommflag --file "$file" --rebuild
@@ -465,10 +465,10 @@ HandBrakeCLI -q 19.0 -e x264 -r 25 -a "$audiotacks" -A "$audioname" -E "$audioco
 
       #SD-TV Userjob is encoding to MPEG4 ASP aka DivX aka Xvid via FFMPEG via HandBrakeCLI
       # $SDCCMDLINE is the commandline for SDtv-Commercials
-      SDCCMDLINE='/usr/bin/HandBrakeCLI -q 3 -r 25 -a $audiotacks -A $audioname -E $audiocodec -B $audiobitrate -6 $audiodownmix -f mp4 --crop 0:0:0:0 -d -m -i "$mythrecordingsdir/$file" -o "$outfile" --optimize 2>> "$logfile"'
+      SDCCMDLINE='/usr/bin/HandBrakeCLI --multi-pass -q 24 -r 25 -a $audiotacks -A $audioname -E $audiocodec -B $audiobitrate -6 $audiodownmix -f mp4 --crop 0:0:0:0 -d -m -i "$mythrecordingsdir/$file" -o "$outfile" --optimize 2>> "$logfile"'
 
       echo "Commandline: $SDCCMDLINE" >> "$logfile"
-      HandBrakeCLI -q 3 -r 25 -a "$audiotacks" -A "$audioname" -E "$audiocodec" -B "$audiobitrate" -6 "$audiodownmix" -f mp4 --crop 0:0:0:0 -d -m -i "$mythrecordingsdir/$file" -o "$outfile" --optimize  2>> "$logfile"
+      HandBrakeCLI --multi-pass -q 24 -r 25 -a "$audiotacks" -A "$audioname" -E "$audiocodec" -B "$audiobitrate" -6 "$audiodownmix" -f mp4 --crop 0:0:0:0 -d -m -i "$mythrecordingsdir/$file" -o "$outfile" --optimize  2>> "$logfile"
 
       if [ $? != 0 ]
 	# There were errors in the Handbrake Run.
@@ -503,203 +503,6 @@ fi
 #Transcoding now done, following is some maintenance work
 chown mythtv:mythtv "$outfile"
 
-
-exit 0
-
-Version 1.2
-
-# Version 1.2
-#!/bin/bash
-# Save this as mythbrake.sh and make the file executable
-# Written by Ares Drake, ares.drake@gmail.com
-# Licenced under GPL v3
-# This Script shall be called as MythTV user job. It transcodes the DVB recordings (mpeg files) using Handbrake. It first checks whether the recording is HDTV. If so it will be reencoded with H.264 to save space. SDTV will have commercials cut out if necessary and will then be transcoded to H.263 (Xvid, DivX).
-#
-#USAGE:######################
-# This Sript shall be called as a MythTV user job like as follows:
-# /path/to/mythbrake.sh "%DIR%" "%FILE%" "%CHANID%" "%STARTTIME%" "%TITLE%" "%SUBTITLE%"
-#############################
-#
-#
-#REQUIREMENTS################
-# You need to have the following programs installed:
-# mediainfo: http://mediainfo.sourceforge.net/
-# handbrake with dependencies: http://www.handbrake.fr
-#############################
-
-
-###Some constants for user editing
-logdir="/opt/mythtv/transcodelogs"
-errormail="youremail@adress.com" # this email address will be informed in case of errors
-outdir="/where/you/want/it" # specify directory where you want the transcoded file to be placed
-audiostreamname="Deutsch-Stereo" #This is the label of the audio stream inside the final video file
-
-
-###Define some basic variables
-scriptstarttime=$(date +%F-%H%M%S)
-mythrecordingsdir="$1" # specify directory where MythTV stores its recordings
-file="$2"
-chanid="$3"
-starttime="$4"
-title="$(echo "$5" | sed 's/(//g' | sed 's/)//g' | sed 's/:/_/g' | sed 's%/%_%g')"
-subtitle="$(echo "$6" | sed 's/(//g' | sed 's/)//g' | sed 's/://g' | sed 's%/%_%g')"
-logfile="$logdir/$scriptstarttime-$title.log"
-touch "$logfile"
-chown mythtv:mythtv "$logfile"
-chmod a+rw "$logfile"
-filename="$title.mp4" # can be customized
-if [ -f "$outdir/$filename" ]
- # do not overwrite outfile, if already exists, change name
- then
- filename="filename-$scriptstarttime"
-fi
-outfile="$outdir/$filename"
-
-
-###Do some logging
-echo "Transcode job $title starting at $scriptstarttime" >> "$logfile"
-echo "Original file: $mythrecordingsdir/$file" >> "$logfile"
-echo "Target file: $outfile" >> "$logfile"
-echo "ChanId: $chanid Time: $starttime" >> "$logfile"
-#Source file check
-if [ ! -f "$mythrecordingsdir/$file" ];
-then
-    #source file does not exist
-    scriptstoptime=$(date +%F-%H:%M:%S)
-    echo "Error at $scriptstoptime: Source file not found " >> "$logfile"
-    echo "Maybe wrong path or missing permissions?" >> "$logfile"
-    mail -s "Mythtv Sourcefile Error on $HOSTNAME" "$errormail" < "$logfile"
-    mv "$logfile" "$logfile-FAILED"
-    exit 1
-fi
-
-####################
-#get width: you need mediainfo installed, see mediainfo.sourceforge.net
-width=$(mediainfo --Inform="Video;%Width%" "$mythrecordingsdir/$file")
-  if [ $? != 0 ]
-    # There were errors with Mediainfo.
-    then
-    scriptstoptime=$(date +%F-%H:%M:%S)
-    echo "Error prior to encoding at $scriptstoptime" >> "$logfile"
-    echo "Mediainfo encountered an error. Maybe mediainfo is not installed, or not in your path" >> "$logfile"
-    echo "Mediainfo encountered an error. Maybe mediainfo is not installed, or not in your path"
-    mail -s "Mythtv Mediainfo Error on $HOSTNAME" "$errormail" < "$logfile"
-    mv "$logfile" "$logfile-FAILED"
-    exit 1
-    else
-    echo "Mediainfo Run successful." >> "$logfile"
-  fi
-fullmediainfo=(mediainfo $mythrecordingsdir/"$file")
-##############################################################
-
-
-
-### Transcoding starts here, in 3 differend versions: HDTV w/o commercials, SDTV w/ and w/o commercials.
-
-
-# width >=1280
-# currently this can only be ARD HD, ZDF HD or ARTE HD, so no commercials
-# Userjob for HDTV: Re-Encode in AVC H.264: saves space, but keeps H.264, x264 via HandbrakeCLI
-if [ $width -ge 1280 ]
-  then
-  echo "Userjob HD-TV starts because of with of $width" >> "$logfile"
-  # $HDCMDLINE is the commandline for HDTV
-  HDCMDLINE='HandBrakeCLI -q 20.0 -e x264 -r 25 -a 1 -A $audiostreamname -E MP3 -B 128 -R 48 --mixdown dpl2 -f mp4 --crop 0:0:0:0 -d -m -x b-adapt=2:rc-lookahead=50:ref=3:bframes=3:me=umh:subme=8:trellis=1:merange=20:direct=auto -i "$mythrecordingsdir/$file" -o "$outfile" --optimize 2>> "$logfile"'
-  HandBrakeCLI -q 20.0 -e x264 -r 25 -a 1 -A $audiostreamname -E MP3 -B 128 -R 48 --mixdown dpl2 -f mp4 --crop 0:0:0:0 -d -m -x b-adapt=2:rc-lookahead=50:ref=3:bframes=3:me=umh:subme=8:trellis=1:merange=20:direct=auto -i "$mythrecordingsdir/$file" -o "$outfile" --optimize 2>> "$logfile"
-  if [ $? != 0 ]
-	# There were errors in the Handbrake Run.
-	then
-	scriptstoptime=$(date +%F-%H:%M:%S)
-	echo "Transcoding-Error at $scriptstoptime" >> "$logfile"
-	echo "Interrupted file $outfile" >> "$logfile"
-	echo "###################################" >> "$logfile"
-	echo $fullmediainfo >> "$logfile"
-	mail -s "Mythtv Transcoding Error on $HOSTNAME" "$errormail" < "$logfile"
-        mv "$logfile" "$logfile-FAILED"
-	exit 1
-	else
-	echo "Transcode Run successfull." >> "$logfile"
-      fi
-
-
-#width <= 720
-elif [ $width -le 720 ]
-  then
- # this is SDTV, so it could be either with or without commercials. We check for commercials by comparing to ChanID list.
-
-    if [ $chanid == 3007 -o $chanid == 29014 -o $chanid == 30014 -o $chanid == 30107 ]
-    #ChanID without commercials: 3007 3sat; ZDF info; 29014 & 3014 ZDF neo; ZDF theater; 30107 BayrFS Nord; BayrFS Süd; SWR BW; RBB Berlin; WDR Köln; BR alpha; SR
-    # better option would be to pull the commercial-free flag from the database, but
-    # then i would advise against manual access to the database when using a language
-    # such as bash with no mysql support.
-      then
-      #This is a channel without commercials
-      echo "Userjob SD-TV ohne Werbung startet" >> "$logfile"
-      #SD-TV Userjob is encoding to MPEG4 ASP aka DivX aka Xvid via FFMPEG via HandBrakeCLI
-
-      # $SDFCMDLINE is the commandline for SDtv-commercialFree
-      SDFCMDLINE="/usr/bin/HandBrakeCLI -q 3 -r 25 -a 1 -A $audiostreamname -E MP3 -B 128 -R 48 --mixdown dpl2 -f mp4 --crop 0:0:0:0 -d -m -i $mythrecordingsdir/$file -o $outfile --optimize"
-      echo "Commandline: $SDFCMDLINE" >> "$logfile"
-      HandBrakeCLI -q 3 -r 25 -a 1 -A $audiostreamname -E MP3 -B 128 -R 48 --mixdown dpl2 -f mp4 --crop 0:0:0:0 -d -m -i "$mythrecordingsdir/$file" -o "$outfile" --optimize  2>> "$logfile"
-      if [ $? != 0 ]
-	# There were errors in the Handbrake Run.
-	then
-	scriptstoptime=$(date +%F-%H:%M:%S)
-	echo "Transcoding-Error at $scriptstoptime" >> "$logfile"
-	echo "Broken File $outfile" >> "$logfile"
-	echo "###################################" >> "$logfile"
-	echo $fullmediainfo >> "$logfile"
-	mail -s "Mythtv Transcoding Error on $HOSTNAME" "$errormail" < "$logfile"
-        mv "$logfile" "$logfile-FAILED"
-	exit 1
-	else
-	echo "Transcode Run successful." >> "$logfile"
-      fi
-
-    else
-      # We have a channel with commercials, so flag & cut them out first.
-      echo "Userjob SD-TV mit Werbung startet" >> "$logfile"
-      /usr/bin/mythcommflag -c "$chanid" -s "$starttime" --gencutlist
-      /usr/bin/mythtranscode --chanid "$chanid" --starttime "$starttime" --mpeg2 --honorcutlist
-      /usr/bin/mythcommflag --file "$file" --rebuild
-      #Finished commercial cutting, following is encoding as above
-
-      #SD-TV Userjob is encoding to MPEG4 ASP aka DivX aka Xvid via FFMPEG via HandBrakeCLI
-      # $SDCCMDLINE is the commandline for SDtv-Commercials
-      SDCCMDLINE='/usr/bin/HandBrakeCLI -q 3 -r 25 -a 1 -A $audiostreamname -E MP3 -B 128 -R 48 --mixdown dpl2 -f mp4 --crop 0:0:0:0 -d -m -i "$mythrecordingsdir/$file" -o "$outfile" --optimize 2>> "$logfile"'
-
-      echo "Commandline: $SDCCMDLINE" >> "$logfile"
-      HandBrakeCLI -q 3 -r 25 -a 1 -A $audiostreamname -E MP3 -B 128 -R 48 --mixdown dpl2 -f mp4 --crop 0:0:0:0 -d -m -i "$mythrecordingsdir/$file" -o "$outfile" --optimize  2>> "$logfile"
-
-      if [ $? != 0 ]
-	# There were errors in the Handbrake Run.
-	then
-	scriptstoptime=$(date +%F-%H:%M:%S)
-	echo "Transcoding-Error at $scriptstoptime" >> "$logfile"
-	echo "Broken File $outfile" >> "$logfile"
-	echo "###################################" >> "$logfile"
-	echo $fullmediainfo >> "$logfile"
-	mail -s "Mythtv Transcoding Error on $HOSTNAME" "$errormail" < "$logfile"
-        mv "$logfile" "$logfile-FAILED"
-	exit 1
-	else
-	echo "Transcode Run successful." >> "$logfile"
-      fi
-    fi
-
-#720<width<1280 or error getting width: dunno whats going on here, abort
-else
-    echo "Error: 720<width<1280, undefined condition, aborting" >> "$logfile"
-    echo "###################################" >> "$logfile"
-    echo $fullmediainfo >> "$logfile"
-    mail -s "Mythtv Transcoding Error on $HOSTNAME" "$errormail" < "$logfile"
-    mv "$logfile" "$logfile-FAILED"
-    exit 1
-fi
-
-  scriptstoptime=$(date +%F-%H:%M:%S)
-  echo "Successfully finished at $scriptstoptime" >> "$logfile"
-  echo "Transcoded file: $outfile" >> "$logfile"
 
 exit 0
 
