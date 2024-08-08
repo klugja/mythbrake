@@ -1,0 +1,258 @@
+[22:27:04] Compile-time hardening features are enabled
+Cannot load libnvidia-encode.so.1
+[22:27:04] qsv: not available on this system
+[22:27:05] hb_init: starting libhb thread
+[22:27:05] thread 7b41f56006c0 started ("libhb")
+HandBrake 1.8.1 (2024062200) - Linux x86_64 - https://handbrake.fr
+24 CPUs detected
+Opening /mnt/bigr0/store/2021_20161003010000.mpg...
+[22:27:05] CPU: 13th Gen Intel(R) Core(TM) i7-13700K
+[22:27:05]  - logical processor count: 24
+[22:27:05] Intel Quick Sync Video support: no
+[22:27:05] hb_scan: path=/mnt/bigr0/store/2021_20161003010000.mpg, title_index=1
+udfread ERROR: ECMA 167 Volume Recognition failed
+disc.c:333: failed opening UDF image /mnt/bigr0/store/2021_20161003010000.mpg
+disc.c:437: error opening file BDMV/index.bdmv
+disc.c:437: error opening file BDMV/BACKUP/index.bdmv
+[22:27:05] bd: not a bd - trying as a stream/file instead
+libdvdread: DVDOpenFileUDF:UDFFindFile /VIDEO_TS/VIDEO_TS.IFO failed
+libdvdnav: vm: vm: failed to read VIDEO_TS.IFO
+[22:27:05] dvd: not a dvd - trying as a stream/file instead
+[22:27:05] file is MPEG Transport Stream with 188 byte packets offset 0 bytes
+[22:27:05] Found the following PIDS
+[22:27:05]     Video PIDS : 
+[22:27:05]       0x31 type MPEG2 (0x2) (PCR)
+[22:27:05]     Audio PIDS : 
+[22:27:05]       0x34 type AC3 (0x81)
+[22:27:05]       0x35 type AC3 (0x81)
+[22:27:05]     Subtitle PIDS : 
+[22:27:05]     Other PIDS : 
+[22:27:05] stream id 0x34 (type 0x81 substream 0x0) audio 0x34
+[22:27:05] stream id 0x35 (type 0x81 substream 0x0) audio 0x35
+[22:27:05] scan: decoding previews for title 1
+[22:27:05] file is MPEG Transport Stream with 188 byte packets offset 0 bytes
+[22:27:05] scan: audio 0x34: ac3, rate=48000Hz, bitrate=384000 English (AC3, 5.1 ch, 384 kbps)
+[22:27:05] scan: audio 0x35: ac3, rate=48000Hz, bitrate=192000 español (AC3, 2.0 ch, 192 kbps)
+[22:27:05] stream: 62 good frames, 0 errors (0%)
+[22:27:05] using bitstream PAR 1:1
+[22:27:05] scan: 10 previews, 1920x1080, 29.970 fps, autocrop = 0/0/0/0, aspect 16:9, PAR 1:1, color profile: 1-1-1, chroma location: left
+[22:27:05] libhb: scan thread found 1 valid title(s)
++ Using preset: CLI Default
++ title 1:
+  + stream: /mnt/bigr0/store/2021_20161003010000.mpg
+  + duration: 01:00:02
+  + size: 1920x1080, pixel aspect: 1/1, display aspect: 1.78, 29.970 fps
+  + autocrop: 0/0/0/0
+  + chapters:
+    + 1: duration 01:00:02
+  + audio tracks:
+    + 1, English (AC3, 5.1 ch, 384 kbps) (iso639-2: eng), 48000Hz, 384000bps
+    + 2, español (AC3, 2.0 ch, 192 kbps) (iso639-2: spa), 48000Hz, 192000bps
+  + subtitle tracks:
+    + 1, English, Closed Caption [CC608]
+[22:27:05] Starting work at: Wed Aug  7 22:27:05 2024
+
+[22:27:05] 1 job(s) to process
+[22:27:05] json job:
+{
+    "Audio": {
+        "AudioList": [
+            {
+                "Bitrate": 128,
+                "CompressionLevel": -1.0,
+                "DRC": 0.0,
+                "DitherMethod": "auto",
+                "Encoder": "av_aac",
+                "Gain": 0.0,
+                "Mixdown": "dpl2",
+                "NormalizeMixLevel": false,
+                "PresetEncoder": "av_aac",
+                "Quality": -3.0,
+                "Samplerate": 0,
+                "Track": 0
+            }
+        ],
+        "CopyMask": [
+            "copy:aac",
+            "copy:ac3",
+            "copy:eac3",
+            "copy:dtshd",
+            "copy:dts",
+            "copy:mp3",
+            "copy:truehd",
+            "copy:flac"
+        ],
+        "FallbackEncoder": "av_aac"
+    },
+    "Destination": {
+        "AlignAVStart": false,
+        "ChapterList": [
+            {
+                "Duration": {
+                    "Hours": 1,
+                    "Minutes": 0,
+                    "Seconds": 2,
+                    "Ticks": 324233547
+                },
+                "Name": "Chapter 1"
+            }
+        ],
+        "ChapterMarkers": false,
+        "File": "/home/mythtv/Transcode/pass3/2021_20161003010000.mpg",
+        "InlineParameterSets": false,
+        "Mux": "m4v",
+        "Options": {
+            "IpodAtom": false,
+            "Optimize": false
+        }
+    },
+    "Filters": {
+        "FilterList": [
+            {
+                "ID": 11,
+                "Settings": {
+                    "mode": 0
+                }
+            },
+            {
+                "ID": 20,
+                "Settings": {
+                    "crop-bottom": 0,
+                    "crop-left": 0,
+                    "crop-right": 0,
+                    "crop-top": 0,
+                    "height": 1080,
+                    "width": 1920
+                }
+            }
+        ]
+    },
+    "Metadata": {},
+    "PAR": {
+        "Den": 1,
+        "Num": 1
+    },
+    "SequenceID": 0,
+    "Source": {
+        "Angle": 0,
+        "HWDecode": 0,
+        "Path": "/mnt/bigr0/store/2021_20161003010000.mpg",
+        "Range": {
+            "End": 1,
+            "Start": 1,
+            "Type": "chapter"
+        },
+        "Title": 1
+    },
+    "Subtitle": {
+        "Search": {
+            "Burn": true,
+            "Default": false,
+            "Enable": false,
+            "Forced": false
+        },
+        "SubtitleList": []
+    },
+    "Video": {
+        "ChromaLocation": 1,
+        "ColorInputFormat": 0,
+        "ColorMatrix": 1,
+        "ColorOutputFormat": 0,
+        "ColorPrimaries": 1,
+        "ColorRange": 1,
+        "ColorTransfer": 1,
+        "Encoder": "x264",
+        "HardwareDecode": 0,
+        "Level": "auto",
+        "MultiPass": false,
+        "Options": "",
+        "Preset": "medium",
+        "Profile": "auto",
+        "QSV": {
+            "AdapterIndex": 0,
+            "AsyncDepth": 0,
+            "Decode": false
+        },
+        "Quality": 22.0,
+        "Tune": "",
+        "Turbo": false
+    }
+}
+[22:27:05] Starting Task: Encoding Pass
+[22:27:05] work: skipping crop/scale filter
+[22:27:05] job configuration:
+[22:27:05]  * source
+[22:27:05]    + /mnt/bigr0/store/2021_20161003010000.mpg
+[22:27:05]    + title 1, chapter(s) 1 to 1
+[22:27:05]  * destination
+[22:27:05]    + /home/mythtv/Transcode/pass3/2021_20161003010000.mpg
+[22:27:05]    + container: MPEG-4 (libavformat)
+[22:27:05]  * video track
+[22:27:05]    + decoder: mpeg2video 8-bit (yuv420p)
+[22:27:05]      + bitrate 200 kbps
+[22:27:05]    + filter
+[22:27:05]      + Framerate Shaper (mode=0)
+[22:27:05]        + frame rate: same as source (around 29.970 fps)
+[22:27:05]    + Output geometry
+[22:27:05]      + storage dimensions: 1920 x 1080
+[22:27:05]      + pixel aspect ratio: 1 : 1
+[22:27:05]      + display dimensions: 1920 x 1080
+[22:27:05]    + encoder: H.264 (libx264)
+[22:27:05]      + preset:  medium
+[22:27:05]      + profile: auto
+[22:27:05]      + level:   auto
+[22:27:05]      + quality: 22.00 (RF)
+[22:27:05]      + color profile: 1-1-1
+[22:27:05]      + color range: tv
+[22:27:05]      + chroma location: left
+[22:27:05]  * audio track 1
+[22:27:05]    + decoder: English (AC3, 5.1 ch, 384 kbps) (track 1, id 0x34)
+[22:27:05]      + bitrate: 384 kbps, samplerate: 48000 Hz
+[22:27:05]    + mixdown: Dolby Pro Logic II
+[22:27:05]    + encoder: AAC (libavcodec)
+[22:27:05]      + bitrate: 128 kbps, samplerate: 48000 Hz
+[22:27:05] file is MPEG Transport Stream with 188 byte packets offset 0 bytes
+[22:27:05] sync: expecting 107969 video frames
+[22:27:05] encx264: min-keyint: 30, keyint: 300
+[22:27:05] encx264: encoding at constant RF 22.000000
+x264 [info]: using SAR=1/1
+x264 [info]: using cpu capabilities: MMX2 SSE2Fast SSSE3 SSE4.2 AVX FMA3 BMI2 AVX2
+x264 [info]: profile High, level 4.0, 4:2:0, 8-bit
+[22:27:05] sync: first pts audio 0x34 is 0
+[22:27:05] sync: first pts video is 32823
+Signal 2 received, terminating - do it again in case it gets stuck
+[22:27:09] work: average encoding speed for job is 225.147644 fps
+[22:27:09] vfr: 970 frames output, 0 dropped
+[22:27:09] vfr: lost time: 0 (0 frames)
+[22:27:09] vfr: gained time: 0 (0 frames) (0 not accounted for)
+[22:27:09] stream: 1046 good frames, 0 errors (0%)
+[22:27:09] ac3-decoder done: 1084 frames, 0 decoder errors
+[22:27:09] mpeg2video-decoder done: 1038 frames, 0 decoder errors
+[22:27:09] sync: got 991 frames, 107969 expected
+[22:27:09] sync: framerate min 29.970 fps, max 29.970 fps, avg 29.970 fps
+[aac @ 0x7b41e800e100] Ignoring attempt to flush encoder that doesn't support it
+[aac @ 0x7b41e800e100] Qavg: 711.881
+[aac @ 0x7b41e800e100] 2 frames left in the queue on closing
+x264 [info]: frame I:10    Avg QP:18.74  size: 90394
+x264 [info]: frame P:261   Avg QP:21.70  size: 32671
+x264 [info]: frame B:616   Avg QP:22.99  size: 12293
+x264 [info]: consecutive B-frames:  2.9% 10.4%  9.1% 77.6%
+x264 [info]: mb I  I16..4: 24.7% 69.0%  6.3%
+x264 [info]: mb P  I16..4:  9.1% 18.6%  1.3%  P16..4: 35.7%  6.1%  4.2%  0.0%  0.0%    skip:25.0%
+x264 [info]: mb B  I16..4:  1.2%  2.1%  0.1%  B16..8: 30.9%  2.4%  0.5%  direct: 5.2%  skip:57.6%  L0:47.6% L1:48.0% BI: 4.3%
+x264 [info]: 8x8 transform intra:64.0% inter:91.1%
+x264 [info]: coded y,uvDC,uvAC intra: 43.6% 55.2% 8.4% inter: 13.4% 22.4% 0.3%
+x264 [info]: i16 v,h,dc,p: 32% 37%  9% 22%
+x264 [info]: i8 v,h,dc,ddl,ddr,vr,hd,vl,hu: 27% 23% 32%  2%  3%  3%  3%  3%  4%
+x264 [info]: i4 v,h,dc,ddl,ddr,vr,hd,vl,hu: 11% 71%  7%  2%  2%  2%  2%  1%  2%
+x264 [info]: i8c dc,h,v,p: 53% 23% 21%  3%
+x264 [info]: Weighted P-Frames: Y:7.7% UV:6.5%
+x264 [info]: ref P L0: 54.6%  7.5% 26.6% 11.0%  0.3%
+x264 [info]: ref B L0: 83.5% 11.9%  4.6%
+x264 [info]: ref B L1: 94.9%  5.1%
+x264 [info]: kb/s:4596.12
+[22:27:10] mux: track 0, 886 frames, 16993047 bytes, 4070.19 kbps, fifo 1024
+[22:27:10] mux: track 1, 1565 frames, 547707 bytes, 131.19 kbps, fifo 2048
+[22:27:10] Finished work at: Wed Aug  7 22:27:10 2024
+
+HandBrake has exited.
