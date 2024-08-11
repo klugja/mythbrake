@@ -8,10 +8,15 @@
 # After verification, the files can be moved back
 # to their original location.
 flist=$1
-indir=$2
+indir=$(readlink -f "$2")
 
 echo File list is $flist
-outdir=$(pwd)
+outdir=$(readlink -f $(pwd))
+if [[ $indir == $outdir ]] ; then
+    echo "Current directory (output directory)"
+    echo "cannot be the input directory"
+    exit 1
+fi
 jsonfile=/usr/local/lib/handbrake/HEVC1080p30.json
 mkdir -p $outdir/log
 exec 2>&1
