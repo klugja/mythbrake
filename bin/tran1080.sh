@@ -3,6 +3,10 @@
 # Input files are assumed to be 1920x1080 pixels
 # cd OutputDirectory
 # tran1080.sh FileList InputDirectory
+# Or maybe something like this:
+# tran1080.sh ~/list-1080-hd.txt /mnt/MythRecordings
+# After verification, the files can be moved back
+# to their original location.
 flist=$1
 indir=$2
 
