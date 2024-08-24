@@ -1,12 +1,18 @@
 #!/bin/bash
 # Find file ending in .mpg that are a width of 1920p
-# These are all MPEG files.
-# First change to directory withn *.MPG files.
+# Throw out files that are already in HEVC format.
+# First change to directory withn *.MPG or *.TS files.
 # cd MythRecordingsDirectory
 # find-hd1080.sh >~/list-hd-1080.txt
-for f in *.mpg ; do
-    out=$(mediainfo $f | grep Width)
-    if [[ $out =~ :[[:space:]]+1[[:space:]]+920[[:space:]] ]] ; then
-        echo $f
+
+for f in *.mpg *.ts ; do
+    out=$(mediainfo $f)
+    res=0
+    if ! [[ $out =~ [[:space:]]Width[[:space:]]+:[[:space:]]+1[[:space:]]+920[[:space:]] ]] ; then
+        continue
     fi
+    if [[ $out =~ [[:space:]]Format[[:space:]]+:[[:space:]]+HEVC[[:space:]] ]] ; then
+        continue
+    fi
+    echo $f
 done
